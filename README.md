@@ -9,8 +9,7 @@
 **Before you start, you need to install required packages.**
 
 ```
-$ npm install ganache-cli truffle -g
-$ npm install
+https://remix.ethereum.org
 ```
 
 **Launch private blockchain using ganache.**
