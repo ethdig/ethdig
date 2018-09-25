@@ -3,6 +3,6 @@
 [Ethdig eth](https://ethdig.xyz)
 
 
-### IDE Ethdig.sol
+### IDE Ethdig.sol [Remix](https://remix.ethereum.org)
 
-[Remix](https://remix.ethereum.org)
+
