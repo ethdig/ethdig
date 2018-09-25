@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract Ethdigg {
+contract Ethdig {
     address public owner;
     address public adminAddr;
     uint constant public MASS_TRANSACTION_LIMIT = 150;
