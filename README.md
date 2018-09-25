@@ -3,13 +3,10 @@
 [Ethdig eth](https://ethdig.xyz)
 
 
-### Check contract working
-
-
-**Before you start, you need to install required packages.**
+### IDE Ethdig.sol
 
 ```
-https://remix.ethereum.org
+### [Remix] (https://remix.ethereum.org)
 ```
 
 **Launch private blockchain using ganache.**
