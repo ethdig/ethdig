@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract Gorgona {
+contract Ethdig {
     address public owner;
     address public adminAddr;
     uint constant public MASS_TRANSACTION_LIMIT = 150;
@@ -9,7 +9,7 @@ contract Gorgona {
     uint public depositAmount;
     uint public round;
     uint public lastPaymentDate;
-    GorgonaKiller public gorgonaKiller;
+    A_good_investor public a_good_investor;
     address[] public addresses;
     mapping(address => Investor) public investors;
     bool public pause;
@@ -23,7 +23,7 @@ contract Gorgona {
         address referrer;
     }
 
-    struct GorgonaKiller
+    struct A_good_investor
     {
         address addr;
         uint deposit;
@@ -32,7 +32,7 @@ contract Gorgona {
     event Invest(address addr, uint amount, address referrer);
     event Payout(address addr, uint amount, string eventType, address from);
     event NextRoundStarted(uint round, uint date, uint deposit);
-    event GorgonaKillerChanged(address addr, uint deposit);
+    event A_good_investorChanged(address addr, uint deposit);
 
     modifier onlyOwner {if (msg.sender == owner) _;}
 
@@ -59,8 +59,8 @@ contract Gorgona {
             investors[_addr[i]] = Investor(id, _deposit[i], 1, _date[i], _referrer[i]);
             emit Invest(_addr[i], _deposit  [i], _referrer[i]);
 
-            if (investors[_addr[i]].deposit > gorgonaKiller.deposit) {
-                gorgonaKiller = GorgonaKiller(_addr[i], investors[_addr[i]].deposit);
+            if (investors[_addr[i]].deposit > a_good_investor.deposit) {
+                a_good_investor = A_good_investor(_addr[i], investors[_addr[i]].deposit);
             }
         }
         lastPaymentDate = now;
@@ -76,7 +76,7 @@ contract Gorgona {
             return;
         }
 
-        require(false == pause, "Gorgona is restarting. Please wait.");
+        require(false == pause, "Ethdig is restarting. Please wait.");
         require(msg.value >= MINIMUM_INVEST, "Too small amount, minimum 0.01 ether");
         Investor storage user = investors[msg.sender];
 
