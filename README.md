@@ -3,6 +3,4 @@
 [Ethdig](https://ethdig.xyz)
 
 
-[Remix] (https://remix.ethereum.org)
-
-
+[Remix Ide](https://remix.ethereum.org)
