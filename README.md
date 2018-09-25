@@ -1,4 +1,4 @@
-# Ethdig.io smart contract
+# Ethdig.xyz smart contract
 
 [Ethdig eth](https://ethdig.xyz)
 
