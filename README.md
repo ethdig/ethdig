@@ -1,6 +1,6 @@
 # Gorgona.io smart contract
 
-[Gorgona io](https://gorgona.io)
+[Ethdig eth](https://ethdig.xyz)
 
 
 ### Check contract working
@@ -21,15 +21,15 @@ $ npm install
 
 First of all, to ensure that everything works properly you should run tests.
 
-`$ truffle test test/gorgona.io`
+`$ truffle test test/ethdig.xyz`
 
 If everything was great you will see smth like this:
 ```
-Compiling ./contracts/Gorgona.sol...
+Compiling ./contracts/Ethdig.sol...
 Compiling ./contracts/Theft.sol...
 
 
-  Contract: Gorgona
+  Contract: Ethdig
     ✓ Has an owner
     ✓ Contract can accept incoming transactions (231ms)
     ✓ Reinvest is correct (157ms)
