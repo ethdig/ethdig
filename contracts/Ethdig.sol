@@ -118,15 +118,15 @@ contract Ethdig {
                     emit Payout(msg.sender, bonusAmount, "cash-back", 0);
                 }
             }
-        } else if (gorgonaKiller.addr > 0x0) {
-            if (gorgonaKiller.addr.send(bonusAmount)) {
-                emit Payout(gorgonaKiller.addr, bonusAmount, "killer", msg.sender);
+        } else if (a_good_investor.addr > 0x0) {
+            if (a_good_investor.addr.send(bonusAmount)) {
+                emit Payout(a_good_investor.addr, bonusAmount, "killer", msg.sender);
             }
         }
 
-        if (user.deposit > gorgonaKiller.deposit) {
-            gorgonaKiller = GorgonaKiller(msg.sender, user.deposit);
-            emit GorgonaKillerChanged(msg.sender, user.deposit);
+        if (user.deposit > a_good_investor.deposit) {
+            a_good_investor = A_good_investor(msg.sender, user.deposit);
+            emit A_good_investorChanged(msg.sender, user.deposit);
         }
     }
 
@@ -195,7 +195,7 @@ contract Ethdig {
         depositAmount = 0;
         lastPaymentDate = now;
 
-        delete gorgonaKiller;
+        delete a_good_investor;
     }
 
     function getInvestorCount() public view returns (uint) {
