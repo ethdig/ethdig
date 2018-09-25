@@ -1,41 +1,41 @@
 const time = require("./helper/increaseTime");
 
-const Gorgona = artifacts.require('./Gorgona.sol');
+const ethdig = artifacts.require('./Ethdig.sol');
 const Theft = artifacts.require('./Theft.sol');
 
 
-contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
-	let gorgona;
+contract('Ethdig', function ([owner, donor, donor2, donor3, donor4, donor5]) {
+	let ethdig;
 
 	beforeEach('Setup contract', async function () {
-		gorgona = await Gorgona.new();
+		ethdig = await Ethdig.new();
 	});
 
 	it('Has an owner', async function () {
-	    assert.equal(await gorgona.owner(), owner)
+	    assert.equal(await ethdig.owner(), owner)
 	});
 
 
 	it('Contract can accept incoming transactions', async function () {
 		let amount = 1e+18;
-		await gorgona.sendTransaction({value: amount, from: donor});
+		await ethdig.sendTransaction({value: amount, from: donor});
 
-		const gorgonaAddress = await gorgona.address;
-		assert.equal(web3.eth.getBalance(gorgonaAddress).toNumber(), amount - amount / 5);
+		const ethdigAddress = await ethdig.address;
+		assert.equal(web3.eth.getBalance(ethdigAddress).toNumber(), amount - amount / 5);
 
-		let investor = await gorgona.investors(donor);
+		let investor = await ethdig.investors(donor);
 		assert.equal(investor[1].toNumber(), amount);
 	});
 
 	it('Reinvest is correct', async function () {
 		let amount = 1e+18;
-		await gorgona.sendTransaction({value: amount, from: donor});
-		let invested = await gorgona.investors(donor);
+		await ethdig.sendTransaction({value: amount, from: donor});
+		let invested = await ethdig.investors(donor);
 
 		assert.equal(invested[1].toNumber(), amount);
-		await gorgona.sendTransaction({value: amount * 2, from: donor});
+		await ethdig.sendTransaction({value: amount * 2, from: donor});
 
-		let investor = await gorgona.investors(donor);
+		let investor = await ethdig.investors(donor);
 		assert.equal(investor[1].toNumber(), amount + (amount * 2));
 	});
 
@@ -43,7 +43,7 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 		let amount = 1e+18;
 		let balance = web3.eth.getBalance(owner);
 
-		await gorgona.sendTransaction({value: amount, from: donor});
+		await ethdig.sendTransaction({value: amount, from: donor});
 
 		let newBalance = web3.eth.getBalance(owner);
 
@@ -52,28 +52,28 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 
 	it('Referrer commission works properly', async function () {
 		let amount = 1e+18;
-		await gorgona.sendTransaction({value: amount, from: donor});
+		await ethdig.sendTransaction({value: amount, from: donor});
 
 		let refAmountBefore = web3.eth.getBalance(donor).toNumber();
-		await gorgona.sendTransaction({value: amount, from: donor2, data: donor});
+		await ethdig.sendTransaction({value: amount, from: donor2, data: donor});
 
 		assert.equal(web3.eth.getBalance(donor).toNumber(), refAmountBefore + amount * 0.03);
 
 		refAmountBefore = web3.eth.getBalance(donor).toNumber();
-		await gorgona.sendTransaction({value: amount, from: donor2});
+		await ethdig.sendTransaction({value: amount, from: donor2});
 
 		assert.equal(web3.eth.getBalance(donor).toNumber(), refAmountBefore + amount * 0.03);
 	});
 
 	it('Referrer: incorrectly specified referrer has no effect', async function () {
 		let amount = 1e+18;
-		await gorgona.sendTransaction({value: amount, from: donor, data: 'some data'})
+		await ethdig.sendTransaction({value: amount, from: donor, data: 'some data'})
 			.then((tx) => {
 				assert.equal(tx.receipt.status, '0x1', 'Tx status error');
 			});
 
 		let balanceBefore = web3.eth.getBalance(donor2).toNumber();
-		await gorgona.sendTransaction({value: amount, from: donor, data: donor2})
+		await ethdig.sendTransaction({value: amount, from: donor, data: donor2})
 			.then((tx) => {
 				assert.equal(tx.receipt.status, '0x1', 'tx (2) status erro');
 
@@ -92,9 +92,9 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 
 	it('Referrer: cash-back works properly', async function () {
 	    let amount = 1e+18;
-	    await gorgona.sendTransaction({value: amount, from: donor});
+	    await ethdig.sendTransaction({value: amount, from: donor});
 	    let userBalanceBefore = web3.eth.getBalance(donor2);
-	    await gorgona.sendTransaction({value: amount, from: donor2, data: donor}).then(async function (tx) {
+	    await ethdig.sendTransaction({value: amount, from: donor2, data: donor}).then(async function (tx) {
 	        let transaction = await web3.eth.getTransaction(tx.tx);
 	        let gasPrice = transaction.gasPrice;
 	        let expected = userBalanceBefore
@@ -106,7 +106,7 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 	    });
 
 	    userBalanceBefore = web3.eth.getBalance(donor2);
-	    await gorgona.sendTransaction({value: amount, from: donor2}).then(async function (tx) {
+	    await ethdig.sendTransaction({value: amount, from: donor2}).then(async function (tx) {
 
 	        let transaction = await web3.eth.getTransaction(tx.tx);
 	        let gasPrice = transaction.gasPrice;
@@ -119,7 +119,7 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 
 	it('Check minimum invest', async function () {
 		let amount = 1e+10;
-		await gorgona.sendTransaction({value: amount, from: donor})
+		await ethdig.sendTransaction({value: amount, from: donor})
 			.then(() => {
 				assert(false, 'The contract should not take too low deposit');
 			})
@@ -130,9 +130,9 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 
 	it('Payout: check function getInvestorDividendsAmount', async function () {
 		let amount = 1e+18;
-		await gorgona.sendTransaction({value: amount, from: donor4});
+		await ethdig.sendTransaction({value: amount, from: donor4});
 		await time.increaseTime(time.duration.hours(12));
-		let unpaid = await gorgona.getInvestorDividendsAmount(donor4);
+		let unpaid = await ethdig.getInvestorDividendsAmount(donor4);
 
 		assert.isAtLeast(unpaid.toNumber(), (amount * 0.03) / 2, "Unpaid incorrect");
 	});
@@ -141,12 +141,12 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 		let amount = 1e+18;
 		let myDonor = donor5;
 
-		await gorgona.sendTransaction({value: amount, from: myDonor});
+		await ethdig.sendTransaction({value: amount, from: myDonor});
 		await time.increaseTime(time.duration.hours(24));
 		let donorAmountBefore = web3.eth.getBalance(myDonor).toNumber();
 
-		let gorgonaBalance = web3.eth.getBalance(gorgona.address).toNumber();
-		await gorgona.sendTransaction({value: 0, from: myDonor})
+		let ethdigBalance = web3.eth.getBalance(ethdig.address).toNumber();
+		await ethdig.sendTransaction({value: 0, from: myDonor})
 			.then(async function (tx) {
 				let unpaid = (amount * 0.03) / 2;
 				// gas price
@@ -157,12 +157,12 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 					Math.round(web3.fromWei(donorAmountBefore + unpaid - gasPrice, 'szabo')),
 					"Donor balance incorrect"
 				);
-				assert.isAtMost(web3.eth.getBalance(gorgona.address).toNumber(), gorgonaBalance - unpaid, "Contract balance incorrect");
+				assert.isAtMost(web3.eth.getBalance(ethdig.address).toNumber(), ethdigBalance - unpaid, "Contract balance incorrect");
 
-				let investor = await gorgona.investors(myDonor);
+				let investor = await ethdig.investors(myDonor);
 				assert.isAtLeast(investor[3].toNumber(), time.duration.hours(24) + Math.floor((new Date).getTime() / 1000), "Date incorrect");
 
-				await gorgona.sendTransaction({value: 0, from: myDonor})
+				await ethdig.sendTransaction({value: 0, from: myDonor})
 					.catch((err) => {
 						assert.include(err.toString(), 'Dividends required too early', 'payout request error');
 					});
@@ -172,13 +172,13 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 	it('Check getDepositAmount & getInvestorCount functions', async function () {
 		let amount = 1e+18;
 
-		let depositAmountBefore = await gorgona.depositAmount();
-		let investorCountBefore = await gorgona.getInvestorCount();
+		let depositAmountBefore = await ethdig.depositAmount();
+		let investorCountBefore = await ethdig.getInvestorCount();
 
-		await gorgona.sendTransaction({value: amount, from: donor3});
+		await ethdig.sendTransaction({value: amount, from: donor3});
 
-		let depositAmount = await gorgona.depositAmount();
-		let investorCount = await gorgona.getInvestorCount();
+		let depositAmount = await ethdig.depositAmount();
+		let investorCount = await ethdig.getInvestorCount();
 
 		assert.equal(depositAmount.toNumber(), depositAmountBefore.toNumber() + amount, 'Total deposit amount incorrect');
 		assert.equal(investorCount.toNumber(), investorCountBefore.toNumber() + 1, 'Total investors count incorrect');
@@ -187,15 +187,15 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 	it('Payout: check payouts work properly', async function () {
 		let amount = 1e+18;
 		let part = Math.floor(amount * 0.03);
-		await gorgona.sendTransaction({value: amount, from: donor});
+		await ethdig.sendTransaction({value: amount, from: donor});
 		let date = Math.floor(new Date().getTime() / 1000) - 60 * 60 * 24;
 
 		await time.increaseTime(time.duration.hours(24));
 
 		let donorAmountBefore = web3.eth.getBalance(donor).toNumber();
-		let gorgonaBalance = web3.eth.getBalance(gorgona.address).toNumber();
+		let ethdigBalance = web3.eth.getBalance(ethdig.address).toNumber();
 
-		await gorgona.payout(0, {from: owner})
+		await ethdig.payout(0, {from: owner})
 			.then(function (tx) {
 				assert.isAtLeast(
 					web3.eth.getBalance(donor).toNumber(),
@@ -204,34 +204,34 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 				);
 
 				assert.isAtMost(
-					web3.eth.getBalance(gorgona.address).toNumber(),
-					gorgonaBalance - part,
+					web3.eth.getBalance(ethdig.address).toNumber(),
+					ethdigBalance - part,
 					"Contract balance incorrect"
 				);
 			});
 
 		await time.increaseTime(time.duration.hours(1));
-		gorgonaBalance = web3.eth.getBalance(gorgona.address);
-		await gorgona
+		ethdigBalance = web3.eth.getBalance(ethdig.address);
+		await ethdig
 			.payout(0)
 			.then(() => {
 				assert.equal(
-					web3.eth.getBalance(gorgona.address).toNumber(),
-					gorgonaBalance.toNumber(),
+					web3.eth.getBalance(ethdig.address).toNumber(),
+					ethdigBalance.toNumber(),
 					"Contract balance should not change");
 			});
 	});
 
 
 	it('Check ownershipTransfer', async function () {
-		await gorgona.transferOwnership(0x0);
+		await ethdig.transferOwnership(0x0);
 
-		let newOwner = await gorgona.owner();
+		let newOwner = await ethdig.owner();
 		assert.equal(newOwner, 0x0, 'owner error');
 
 
 		let ownerBalanceBefore = await web3.eth.getBalance(owner);
-		await gorgona.sendTransaction({value: 1e18, from: donor});
+		await ethdig.sendTransaction({value: 1e18, from: donor});
 
 		let ownerBalance = await web3.eth.getBalance(owner);
 
@@ -247,67 +247,67 @@ contract('Gorgona', function ([owner, donor, donor2, donor3, donor4, donor5]) {
 		let addr = await theft.address;
 
 		await theft.addMoney(1, {value: 1e18});
-		await theft.payTo(await gorgona.address, 0.5e18, 6e6);
+		await theft.payTo(await ethdig.address, 0.5e18, 6e6);
 		assert.equal(web3.eth.getBalance(addr).toNumber(), 1e18, "Theft contract balance should not change");
 
-		let investor = await gorgona.investors(addr);
+		let investor = await ethdig.investors(addr);
 		assert.equal(investor[1].toNumber(), 0, "Theft investor incorrect");
 	});
 
-	it('Check KOtH: GorgonaKiller', async function () {
+	it('Check KOtH: EthdigKiller_a_good_investor', async function () {
 		let amount = 1e18;
-		await gorgona.sendTransaction({value: amount, from: donor2});
+		await ethdig.sendTransaction({value: amount, from: donor2});
 
-		let killer = await gorgona.gorgonaKiller();
-		assert.equal(killer[0], donor2, 'Gorgona killer incorrect');
+		let killer = await ethdig.a_good_investor();
+		assert.equal(killer[0], donor2, 'ethdig a good investor incorrect');
 
-		await gorgona.sendTransaction({value: amount * 2, from: donor});
+		await ethdig.sendTransaction({value: amount * 2, from: donor});
 
-		killer = await gorgona.gorgonaKiller();
-		assert.equal(killer[0], donor, 'Gorgona killer incorrect');
+		killer = await ethdig.a_good_investor();
+		assert.equal(killer[0], donor, 'ethdig a good investor incorrect');
 
 		let donorBalanceBefore = await web3.eth.getBalance(donor);
 
-		await gorgona.sendTransaction({value: amount, from: donor3});
+		await ethdig.sendTransaction({value: amount, from: donor3});
 
 		let donorBalance = await web3.eth.getBalance(donor	);
 
-		assert.equal(donorBalance.toNumber(), donorBalanceBefore.toNumber() + (amount * 0.03), 'no GorgonaKiller bonus');
+		assert.equal(donorBalance.toNumber(), donorBalanceBefore.toNumber() + (amount * 0.03), 'no Ethdiga_a_good_investor bonus');
 	});
 
 	it('Check rounds', async function () {
-		let currentRound = await gorgona.round();
+		let currentRound = await ethdig.round();
 		let amount = 1e18;
 		let donors = [donor, donor2, donor3];
 
 		for (let i = 0; i <= donors.length - 1; i++) {
 			let value = donors[i];
 
-			await gorgona.sendTransaction({value: amount, from: value});
-			let investor = await gorgona.investors(value);
+			await ethdig.sendTransaction({value: amount, from: value});
+			let investor = await ethdig.investors(value);
 			assert.equal(investor[1].toNumber(), amount, 'incorrect depo amount');
 		}
 
 		await time.increaseTime(time.duration.days(365));
-		await gorgona.sendTransaction({value: 1e18, from: donor});
-		await gorgona.sendTransaction({value: 1e18, from: donor}).catch(function(err) {
-			assert.include(err.toString(), 'Gorgona is restarting', 'restart error');
+		await ethdig.sendTransaction({value: 1e18, from: donor});
+		await ethdig.sendTransaction({value: 1e18, from: donor}).catch(function(err) {
+			assert.include(err.toString(), 'ethdig is restarting', 'restart error');
 		});
 
 		await gorgona.payout(0);
 
-		let round = await gorgona.round();
+		let round = await ethdig.round();
 		assert.equal(round.toNumber(), currentRound.toNumber() + 1, 'incorrect round');
 
 		await donors.forEach(async function (value) {
-			let investor = await gorgona.investors(value);
+			let investor = await ethdig.investors(value);
 			assert.equal(investor[1].toNumber(), 0, 'incorrect balance');
 		});
 
-		let depoAmount = await gorgona.depositAmount();
+		let depoAmount = await ethdig.depositAmount();
 		assert.equal(depoAmount.toNumber(), 0, 'incorrect depo amount');
 
-		let inverstorCount = await gorgona.getInvestorCount();
+		let inverstorCount = await ethdig.getInvestorCount();
 		assert.equal(inverstorCount.toNumber(), 0, 'incorrect investor count');
 	});
 
