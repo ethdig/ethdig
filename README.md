@@ -1,4 +1,4 @@
-# Gorgona.io smart contract
+# Ethdig.io smart contract
 
 [Ethdig eth](https://ethdig.xyz)
 
@@ -44,7 +44,7 @@ Compiling ./contracts/Theft.sol...
     ✓ Payout: check payouts work properly (735ms)
     ✓ Check ownershipTransfer (290ms)
     ✓ Check revert on another contract (291ms)
-    ✓ Check KOtH: GorgonaKiller (452ms)
+    ✓ Check KOtH: a_good_investor (452ms)
     ✓ Check rounds (455ms)
 
 
@@ -61,15 +61,15 @@ Before testing you should start ganache-cli with key `-a 500`  (investors count)
 
 Warning! This test took a lot of time!
 
-`$ truffle test test/gorgona-loadtest.io`
+`$ truffle test test/ethdig-loadtest.io`
 
 
 If everything was great you will see smth like this:
 ```
-Compiling ./contracts/Gorgona.sol...
+Compiling ./contracts/Ethdig.sol...
 
 
-  Contract: Gorgona
+  Contract: Ethdig
     ✓ Loadtesting: Create a many investors (700ms)
     ✓ Loadtesting: Check payout for a large number of investors (2716ms)
     ✓ Loadtesting: Check next round on a lot investors (851ms)
