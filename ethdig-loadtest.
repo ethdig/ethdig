@@ -1,11 +1,11 @@
-const Gorgona = artifacts.require('./Gorgona.sol');
+const Ethdig = artifacts.require('./Ethdig.sol');
 const time = require("./helper/increaseTime");
 
-contract('Gorgona', function (accounts) {
-	let gorgona;
+contract('Ethdig', function (accounts) {
+	let ethdig;
 
 	beforeEach('setup contract for each test', async function () {
-		gorgona = await Gorgona.new();
+		ethdig = await Ethdig.new();
 	});
 
 	it('Loadtesting: Create a many investors', async function () {
@@ -13,15 +13,15 @@ contract('Gorgona', function (accounts) {
 
 		for (let i = 1; i <= accounts.length - 1; i++) {
 			let account = accounts[i];
-			await gorgona.sendTransaction({value: amount, from: account});
-			let investor = await gorgona.investors(account);
+			await ethdig.sendTransaction({value: amount, from: account});
+			let investor = await ethdig.investors(account);
 
 			assert.equal(investor[1].toNumber(), amount, 'Account must have 1 eth balance');
 		}
 
-		let gorgonaAddress = await gorgona.address;
-		let gorgonaBalance = await web3.eth.getBalance(gorgonaAddress).toNumber();
-		assert.equal(gorgonaBalance, amount * 0.03 + ((accounts.length - 1) * amount * 0.77), "Gorgona balance incorrect");
+		let Ethdig Address = await ethdig.address;
+		let ethdigBalance = await web3.eth.getBalance(ethdigAddress).toNumber();
+		assert.equal(ethdigBalance, amount * 0.03 + ((accounts.length - 1) * amount * 0.77), "ethdig balance incorrect");
 	});
 
 	it('Loadtesting: Check payout for a large number of investors', async function () {
@@ -31,12 +31,12 @@ contract('Gorgona', function (accounts) {
 		let balances = {};
 
 		for (let i = 1; i <= accounts.length - 1; i++) {
-			await gorgona.sendTransaction({value: amount, from: accounts[i]});
+			await ethdig.sendTransaction({value: amount, from: accounts[i]});
 
 			balances[accounts[i]] = await web3.eth.getBalance(accounts[i]).toNumber();
 		}
 		await time.increaseTime(time.duration.hours(24));
-		await gorgona.payout(0)
+		await ethdig.payout(0)
 			.then(async function (tx) {
 				assert.equal(tx.receipt.status, '0x1', 'tx status error');
 			})
@@ -57,27 +57,27 @@ contract('Gorgona', function (accounts) {
 		let amount = 1e+18;
 
 		for (let i = 1; i <= accounts.length - 1; i++) {
-			await gorgona.sendTransaction({value: amount, from: accounts[i]});
+			await ethdig.sendTransaction({value: amount, from: accounts[i]});
 		}
 
 		await time.increaseTime(time.duration.days(900000));
 
-		let currentRound = await gorgona.round();
+		let currentRound = await ethdig.round();
 
-		let max = await gorgona.MASS_TRANSACTION_LIMIT();
+		let max = await ethdig.MASS_TRANSACTION_LIMIT();
 
 		for (let i = 0; i <= Math.ceil(accounts.length / max); i++) {
-			await gorgona.payout(0)
+			await ethdig.payout(0)
 				.then(async function (tx) {
 					assert.equal(tx.receipt.status, '0x1', 'tx status error');
 				});
 		}
 
-		let round = await gorgona.round();
+		let round = await ethdig.round();
 		assert.equal(round.toNumber(), currentRound.toNumber() + 1, 'incorrect round');
 
 		for (let i = 1; i <= accounts.length - 1; i++) {
-			let investor = await gorgona.investors(accounts[i]);
+			let investor = await ethdig.investors(accounts[i]);
 			assert.equal(investor[1].toNumber(), 0, 'incorrect balance');
 		}
 	});
