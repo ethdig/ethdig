@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract Ethdig {
+contract Gorgona {
     address public owner;
     address public adminAddr;
     uint constant public MASS_TRANSACTION_LIMIT = 150;
@@ -53,7 +53,7 @@ contract Ethdig {
             uint id = addresses.length;
             if (investors[_addr[i]].deposit == 0) {
                 addresses.push(_addr[i]);
-                depositAmount += investors[_addr[i]].deposit;
+                depositAmount += _deposit[i];
             }
 
             investors[_addr[i]] = Investor(id, _deposit[i], 1, _date[i], _referrer[i]);
@@ -76,7 +76,7 @@ contract Ethdig {
             return;
         }
 
-        require(false == pause, "Ethdig is restarting. Please wait.");
+        require(false == pause, "Gorgona is restarting. Please wait.");
         require(msg.value >= MINIMUM_INVEST, "Too small amount, minimum 0.01 ether");
         Investor storage user = investors[msg.sender];
 
