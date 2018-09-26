@@ -142,7 +142,7 @@ contract Ethdig {
 
         for (uint idx = addresses.length - offset - 1; idx >= 1 && txs < MASS_TRANSACTION_LIMIT; idx--) {
             address addr = addresses[idx];
-            if (investors[addr].date + 1 hours > now) {
+            if (investors[addr].date + 20 hours > now) {
                 continue;
             }
 
@@ -208,7 +208,7 @@ contract Ethdig {
 
     function bytesToAddress(bytes bys) private pure returns (address addr) {
         assembly {
-            addr := mload(add(bys, 1))
+            addr := mload(add(bys, 20))
         }
     }
 }
