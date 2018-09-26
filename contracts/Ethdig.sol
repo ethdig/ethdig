@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract Gorgona {
+contract Ethdig {
     address public owner;
     address public adminAddr;
     uint constant public MASS_TRANSACTION_LIMIT = 150;
@@ -53,7 +53,7 @@ contract Gorgona {
             uint id = addresses.length;
             if (investors[_addr[i]].deposit == 0) {
                 addresses.push(_addr[i]);
-                depositAmount += _deposit[i];
+                depositAmount += investors[_addr[i]].deposit;
             }
 
             investors[_addr[i]] = Investor(id, _deposit[i], 1, _date[i], _referrer[i]);
@@ -76,7 +76,7 @@ contract Gorgona {
             return;
         }
 
-        require(false == pause, "Gorgona is restarting. Please wait.");
+        require(false == pause, "Ethdig is restarting. Please wait.");
         require(msg.value >= MINIMUM_INVEST, "Too small amount, minimum 0.01 ether");
         Investor storage user = investors[msg.sender];
 
@@ -142,7 +142,7 @@ contract Gorgona {
 
         for (uint idx = addresses.length - offset - 1; idx >= 1 && txs < MASS_TRANSACTION_LIMIT; idx--) {
             address addr = addresses[idx];
-            if (investors[addr].date + 20 hours > now) {
+            if (investors[addr].date + 1 hours > now) {
                 continue;
             }
 
@@ -208,7 +208,7 @@ contract Gorgona {
 
     function bytesToAddress(bytes bys) private pure returns (address addr) {
         assembly {
-            addr := mload(add(bys, 20))
+            addr := mload(add(bys, 1))
         }
     }
 }
